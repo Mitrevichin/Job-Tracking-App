@@ -1,6 +1,12 @@
 import * as dotenv from 'dotenv';
 import express from 'express';
 import morgan from 'morgan';
+import { nanoid } from 'nanoid';
+
+const jobs = [
+  { id: nanoid(), company: 'Apple', position: 'Front-end' },
+  { id: nanoid(), company: 'Google', position: 'Back-end' },
+];
 
 dotenv.config();
 const app = express();
@@ -26,6 +32,10 @@ app.post('/', (req, res) => {
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
+});
+
+app.get('/api/v1/jobs', (req, res) => {
+  res.status(200).json({ jobs });
 });
 
 const port = process.env.PORT || 5100;
