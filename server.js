@@ -102,6 +102,18 @@ app.delete('/api/v1/jobs/:id', (req, res) => {
   res.status(200).json({ message: 'Job deleted' });
 });
 
+// The order matters. If the request is not one of the CRUD methods above
+// it's gonna enter this middleware
+app.use('*', (req, res) => {
+  res.status(404).json({ message: 'Not found!' });
+});
+
+// If there is a throw new Error somewhere, it's gonna be caught here in the err
+app.use((err, req, res, next) => {
+  console.log(err);
+  res.status(500).json({ message: 'Something went wrong.' });
+});
+
 const port = process.env.PORT || 5100;
 
 app.listen(5100, () => console.log(`server is running at port ${port}...`));
