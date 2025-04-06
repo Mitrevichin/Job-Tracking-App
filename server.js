@@ -1,3 +1,5 @@
+/* All errors that occur in async functions will be caught and forwarded to your error-handling middleware (just like synchronous errors) */
+import 'express-async-errors';
 import * as dotenv from 'dotenv';
 import express from 'express';
 import morgan from 'morgan';
@@ -31,6 +33,7 @@ app.use('*', (req, res) => {
 });
 
 // If there is a throw new Error somewhere, it's gonna be caught here in the err
+/*This error middleware will automatically catch the error, whether it's synchronous or asynchronous when express-async-errors is installed*/
 app.use((err, req, res, next) => {
   console.log(err);
   res.status(500).json({ message: 'Something went wrong.' });
