@@ -1,5 +1,6 @@
 import JobModel from '../models/JobModel.js';
 import { nanoid } from 'nanoid';
+import { NotFoundError } from '../errors/customErrors.js';
 
 let jobs = [
   { id: nanoid(), company: 'Apple', position: 'Front-end' },
@@ -25,7 +26,7 @@ export const getJob = async (req, res) => {
   const job = await JobModel.findById(id);
 
   if (!job) {
-    return res.status(404).json({ message: `No job with id ${id}` });
+    throw new NotFoundError(`No job with id ${id}`);
   }
 
   res.status(200).json({ job });

@@ -4,6 +4,7 @@ import * as dotenv from 'dotenv';
 import express from 'express';
 import morgan from 'morgan';
 import mongoose from 'mongoose';
+import errorHandlerMiddleware from './controllers/middleware/errorHandlerMiddleware.js';
 
 import jobRouter from './routes/jobRouter.js';
 
@@ -34,10 +35,7 @@ app.use('*', (req, res) => {
 
 // If there is a throw new Error somewhere, it's gonna be caught here in the err
 /*This error middleware will automatically catch the error, whether it's synchronous or asynchronous when express-async-errors is installed*/
-app.use((err, req, res, next) => {
-  console.log(err);
-  res.status(500).json({ message: 'Something went wrong.' });
-});
+app.use(errorHandlerMiddleware);
 
 connectToDB();
 async function connectToDB() {
