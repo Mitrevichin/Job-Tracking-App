@@ -33,36 +33,32 @@ export const getJob = async (req, res) => {
 
 // UPDATE JOB
 export const updateJob = async (req, res) => {
-  const { company, position } = req.body;
-
-  if (!company || !position) {
-    return res.status(400).json({ message: 'Provide company and position' });
-  }
-
   const { id } = req.params;
-  const job = jobs.find(job => job.id === id);
+  const { company, position, jobStatus, jobType, jobLocation } = req.body;
 
-  if (!job) {
+  const updatedFields = { company, position, jobStatus, jobType, jobLocation };
+
+  const updatedJob = await JobModel.findByIdAndUpdate(id, updatedFields, {
+    // Always use new: true and runValidators: true when doing findByIdAndUpdate, updateOne, findOneAndUpdate
+    new: true, // Get updated doc instead of the original
+    runValidators: true, // Enforce your schema rules on update
+  });
+
+  if (!updatedJob) {
     return res.status(404).json({ meessage: `No job with id ${id}` });
   }
 
-  job.company = company;
-  job.position = position;
-
-  res.status(200).json({ message: 'Job modified', job });
+  res.status(200).json({ message: 'Job modified', job: updatedJob });
 };
 
 // DELETE JOB
 export const deleteJob = async (req, res) => {
   const { id } = req.params;
-  const job = jobs.find(job => job.id === id);
+  const removedJob = await JobModel.findByIdAndDelete(id);
 
-  if (!job) {
+  if (!removedJob) {
     return res.status(404).json({ meessage: `No job with id ${id}` });
   }
 
-  const newJobs = jobs.filter(job => job.id !== id);
-  jobs = newJobs;
-
-  res.status(200).json({ message: 'Job deleted' });
+  res.status(200).json({ message: 'Job deleted', job: removedJob });
 };
