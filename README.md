@@ -1168,7 +1168,7 @@ const SmallSidebar = () => {
             <Logo />
           </header>
           <div className='nav-links'>
-            {links.map((link) => {
+            {links.map(link => {
               const { text, path, icon } = link;
 
               return (
@@ -1290,7 +1290,7 @@ const NavLinks = () => {
 
   return (
     <div className='nav-links'>
-      {links.map((link) => {
+      {links.map(link => {
         const { text, path, icon } = link;
         // admin user
         return (
@@ -1350,7 +1350,7 @@ const NavLinks = ({ isBigSidebar }) => {
 
   return (
     <div className='nav-links'>
-      {links.map((link) => {
+      {links.map(link => {
         const { text, path, icon } = link;
         // admin user
         return (
@@ -1942,7 +1942,7 @@ app.post('/api/v1/jobs', (req, res) => {
 
 app.get('/api/v1/jobs/:id', (req, res) => {
   const { id } = req.params;
-  const job = jobs.find((job) => job.id === id);
+  const job = jobs.find(job => job.id === id);
   if (!job) {
     return res.status(404).json({ msg: `no job with id ${id}` });
   }
@@ -1957,7 +1957,7 @@ app.patch('/api/v1/jobs/:id', (req, res) => {
     return res.status(400).json({ msg: 'please provide company and position' });
   }
   const { id } = req.params;
-  const job = jobs.find((job) => job.id === id);
+  const job = jobs.find(job => job.id === id);
   if (!job) {
     return res.status(404).json({ msg: `no job with id ${id}` });
   }
@@ -1971,11 +1971,11 @@ app.patch('/api/v1/jobs/:id', (req, res) => {
 
 app.delete('/api/v1/jobs/:id', (req, res) => {
   const { id } = req.params;
-  const job = jobs.find((job) => job.id === id);
+  const job = jobs.find(job => job.id === id);
   if (!job) {
     return res.status(404).json({ msg: `no job with id ${id}` });
   }
-  const newJobs = jobs.filter((job) => job.id !== id);
+  const newJobs = jobs.filter(job => job.id !== id);
   jobs = newJobs;
 
   res.status(200).json({ msg: 'job deleted' });
@@ -2019,7 +2019,7 @@ app.get('/api/v1/jobs', (req, res) => {
 // GET SINGLE JOB
 app.get('/api/v1/jobs/:id', (req, res) => {
   const { id } = req.params;
-  const job = jobs.find((job) => job.id === id);
+  const job = jobs.find(job => job.id === id);
   if (!job) {
     throw new Error('no job with that id');
     return res.status(404).json({ msg: `no job with id ${id}` });
@@ -2060,7 +2060,7 @@ export const createJob = async (req, res) => {
 
 export const getJob = async (req, res) => {
   const { id } = req.params;
-  const job = jobs.find((job) => job.id === id);
+  const job = jobs.find(job => job.id === id);
   if (!job) {
     // throw new Error('no job with that id');
     return res.status(404).json({ msg: `no job with id ${id}` });
@@ -2074,7 +2074,7 @@ export const updateJob = async (req, res) => {
     return res.status(400).json({ msg: 'please provide company and position' });
   }
   const { id } = req.params;
-  const job = jobs.find((job) => job.id === id);
+  const job = jobs.find(job => job.id === id);
   if (!job) {
     return res.status(404).json({ msg: `no job with id ${id}` });
   }
@@ -2086,11 +2086,11 @@ export const updateJob = async (req, res) => {
 
 export const deleteJob = async (req, res) => {
   const { id } = req.params;
-  const job = jobs.find((job) => job.id === id);
+  const job = jobs.find(job => job.id === id);
   if (!job) {
     return res.status(404).json({ msg: `no job with id ${id}` });
   }
-  const newJobs = jobs.filter((job) => job.id !== id);
+  const newJobs = jobs.filter(job => job.id !== id);
   jobs = newJobs;
 
   res.status(200).json({ msg: 'job deleted' });
@@ -2485,11 +2485,11 @@ import { body, validationResult } from 'express-validator';
 
 app.post(
   '/api/v1/test',
-  [body('name').notEmpty().withMessage('name is required')],
+  [body('name').notEmpty().withMessage('name is required').isLe],
   (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      const errorMessages = errors.array().map((error) => error.msg);
+      const errorMessages = errors.array().map(error => error.msg);
       return res.status(400).json({ errors: errorMessages });
     }
     next();
@@ -2508,13 +2508,13 @@ middleware/validationMiddleware.js
 ```js
 import { body, validationResult } from 'express-validator';
 import { BadRequestError } from '../errors/customErrors';
-const withValidationErrors = (validateValues) => {
+const withValidationErrors = validateValues => {
   return [
     validateValues,
     (req, res, next) => {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        const errorMessages = errors.array().map((error) => error.msg);
+        const errorMessages = errors.array().map(error => error.msg);
         throw new BadRequestError(errorMessages);
       }
       next();
@@ -2639,14 +2639,14 @@ import { param } from 'express-validator';
 
 export const validateIdParam = withValidationErrors([
   param('id')
-    .custom((value) => mongoose.Types.ObjectId.isValid(value))
+    .custom(value => mongoose.Types.ObjectId.isValid(value))
     .withMessage('invalid MongoDB id'),
 ]);
 ```
 
 ```js
 export const validateIdParam = withValidationErrors([
-  param('id').custom(async (value) => {
+  param('id').custom(async value => {
     const isValidId = mongoose.Types.ObjectId.isValid(value);
     if (!isValidId) throw new BadRequestError('invalid MongoDB id');
     const job = await Job.findById(value);
@@ -2662,13 +2662,13 @@ import { JOB_STATUS, JOB_TYPE } from '../utils/constants.js';
 import mongoose from 'mongoose';
 import Job from '../models/JobModel.js';
 
-const withValidationErrors = (validateValues) => {
+const withValidationErrors = validateValues => {
   return [
     validateValues,
     (req, res, next) => {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        const errorMessages = errors.array().map((error) => error.msg);
+        const errorMessages = errors.array().map(error => error.msg);
         if (errorMessages[0].startsWith('no job')) {
           throw new NotFoundError(errorMessages);
         }
@@ -2787,7 +2787,7 @@ export const validateRegisterInput = withValidationErrors([
     .withMessage('email is required')
     .isEmail()
     .withMessage('invalid email format')
-    .custom(async (email) => {
+    .custom(async email => {
       const user = await User.findOne({ email });
       if (user) {
         throw new BadRequestError('email already exists');
@@ -3005,7 +3005,7 @@ utils/tokenUtils.js
 ```js
 import jwt from 'jsonwebtoken';
 
-export const createJWT = (payload) => {
+export const createJWT = payload => {
   const token = jwt.sign(payload, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
@@ -3167,7 +3167,7 @@ export const authenticateUser = async (req, res, next) => {
 utils/tokenUtils.js
 
 ```js
-export const verifyJWT = (token) => {
+export const verifyJWT = token => {
   const decoded = jwt.verify(token, process.env.JWT_SECRET);
   return decoded;
 };
@@ -3464,8 +3464,8 @@ client/src/main.jsx
 
 ```js
 fetch('http://localhost:5100/api/v1/test')
-  .then((res) => res.json())
-  .then((data) => console.log(data));
+  .then(res => res.json())
+  .then(data => console.log(data));
 ```
 
 client/vite.config.js
@@ -3478,7 +3478,7 @@ export default defineConfig({
       '/api': {
         target: 'http://localhost:5100/api',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, ''),
+        rewrite: path => path.replace(/^\/api/, ''),
       },
     },
   },
@@ -3489,8 +3489,8 @@ main.jsx
 
 ```js
 fetch('/api/v1/test')
-  .then((res) => res.json())
-  .then((data) => console.log(data));
+  .then(res => res.json())
+  .then(data => console.log(data));
 ```
 
 This code configures a proxy rule for the development server, specifically for requests that start with /api. Let's go through each property:
@@ -3572,7 +3572,7 @@ import axios from 'axios';
 const MyForm = () => {
   const [value, setValue] = useState('');
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async event => {
     event.preventDefault();
     const data = await axios.post('url', { value });
   };
@@ -3953,7 +3953,7 @@ export default AddJob;
     className='form-select'
     defaultValue={JOB_TYPE.FULL_TIME}
   >
-    {Object.values(JOB_TYPE).map((itemValue) => {
+    {Object.values(JOB_TYPE).map(itemValue => {
       return (
         <option key={itemValue} value={itemValue}>
           {itemValue}
@@ -3981,7 +3981,7 @@ const FormRowSelect = ({ name, labelText, list, defaultValue = '' }) => {
         className='form-select'
         defaultValue={defaultValue}
       >
-        {list.map((itemValue) => {
+        {list.map(itemValue => {
           return (
             <option key={itemValue} value={itemValue}>
               {itemValue}
@@ -4198,7 +4198,7 @@ const JobsContainer = () => {
   return (
     <Wrapper>
       <div className='jobs'>
-        {jobs.map((job) => {
+        {jobs.map(job => {
           return <Job key={job._id} {...job} />;
         })}
       </div>
@@ -4672,7 +4672,7 @@ NavLinks.jsx
 
 ```js
 {
-  links.map((link) => {
+  links.map(link => {
     const { text, path, icon } = link;
     const { role } = user;
     if (role !== 'admin' && path === 'admin') return;
@@ -4766,7 +4766,7 @@ const Wrapper = styled.article`
   padding: 2rem;
   background: var(--background-secondary-color);
   border-radius: var(--border-radius);
-  border-bottom: 5px solid ${(props) => props.color};
+  border-bottom: 5px solid ${props => props.color};
   header {
     display: flex;
     align-items: center;
@@ -4776,7 +4776,7 @@ const Wrapper = styled.article`
     display: block;
     font-weight: 700;
     font-size: 50px;
-    color: ${(props) => props.color};
+    color: ${props => props.color};
     line-height: 2;
   }
   .title {
@@ -4790,14 +4790,14 @@ const Wrapper = styled.article`
   .icon {
     width: 70px;
     height: 60px;
-    background: ${(props) => props.bcg};
+    background: ${props => props.bcg};
     border-radius: var(--border-radius);
     display: flex;
     align-items: center;
     justify-content: center;
     svg {
       font-size: 2rem;
-      color: ${(props) => props.color};
+      color: ${props => props.color};
     }
   }
 `;
@@ -5216,7 +5216,7 @@ try {
   const jsonJobs = JSON.parse(
     await readFile(new URL('./utils/mockData.json', import.meta.url))
   );
-  const jobs = jsonJobs.map((job) => {
+  const jobs = jsonJobs.map(job => {
     return { ...job, createdBy: user._id };
   });
   await Job.deleteMany({ createdBy: user._id });
@@ -5304,7 +5304,7 @@ export const showStats = async (req, res) => {
     { $limit: 6 },
   ]);
   monthlyApplications = monthlyApplications
-    .map((item) => {
+    .map(item => {
       const {
         _id: { year, month },
         count,
@@ -5430,7 +5430,7 @@ const StatsContainer = ({ defaultStats }) => {
   ];
   return (
     <Wrapper>
-      {stats.map((item) => {
+      {stats.map(item => {
         return <StatItem key={item.title} {...item} />;
       })}
     </Wrapper>
@@ -5764,7 +5764,7 @@ const SearchContainer = () => {
             type='search'
             name='search'
             defaultValue={search}
-            onChange={(e) => {
+            onChange={e => {
               submit(e.currentTarget.form);
             }}
           />
@@ -5773,7 +5773,7 @@ const SearchContainer = () => {
             name='jobStatus'
             list={['all', ...Object.values(JOB_STATUS)]}
             defaultValue={jobStatus}
-            onChange={(e) => {
+            onChange={e => {
               submit(e.currentTarget.form);
             }}
           />
@@ -5782,7 +5782,7 @@ const SearchContainer = () => {
             name='jobType'
             defaultValue={jobType}
             list={['all', ...Object.values(JOB_TYPE)]}
-            onChange={(e) => {
+            onChange={e => {
               submit(e.currentTarget.form);
             }}
           />
@@ -5790,7 +5790,7 @@ const SearchContainer = () => {
             name='sort'
             defaultValue={sort}
             list={[...Object.values(JOB_SORT_BY)]}
-            onChange={(e) => {
+            onChange={e => {
               submit(e.currentTarget.form);
             }}
           />
@@ -5813,9 +5813,9 @@ export default SearchContainer;
 In JavaScript, debounce is a way to limit how often a function gets called. It helps prevent rapid or repeated function executions by introducing a delay. This is useful for tasks like handling user input, where you want to wait for a pause before triggering an action to avoid unnecessary processing.
 
 ```js
-const debounce = (onChange) => {
+const debounce = onChange => {
   let timeout;
-  return (e) => {
+  return e => {
     const form = e.currentTarget.form;
     clearTimeout(timeout);
     timeout = setTimeout(() => {
@@ -5827,7 +5827,7 @@ const debounce = (onChange) => {
   type='search'
   name='search'
   defaultValue={search}
-  onChange={debounce((form) => {
+  onChange={debounce(form => {
     submit(form);
   })}
 />;
@@ -5862,7 +5862,7 @@ const JobsContainer = () => {
         {totalJobs} job{jobs.length > 1 && 's'} found
       </h5>
       <div className='jobs'>
-        {jobs.map((job) => {
+        {jobs.map(job => {
           return <Job key={job._id} {...job} />;
         })}
       </div>
@@ -5890,7 +5890,7 @@ const PageBtnContainer = () => {
   const navigate = useNavigate();
   const pages = Array.from({ length: numOfPages }, (_, index) => index + 1);
 
-  const handlePageChange = (pageNumber) => {
+  const handlePageChange = pageNumber => {
     const searchParams = new URLSearchParams(search);
     searchParams.set('page', pageNumber);
     navigate(`${pathname}?${searchParams.toString()}`);
@@ -5910,7 +5910,7 @@ const PageBtnContainer = () => {
         prev
       </button>
       <div className='btn-container'>
-        {pages.map((pageNumber) => (
+        {pages.map(pageNumber => (
           <button
             className={`btn page-btn ${pageNumber === currentPage && 'active'}`}
             key={pageNumber}
@@ -5953,7 +5953,7 @@ const PageBtnContainer = () => {
   const { search, pathname } = useLocation();
   const navigate = useNavigate();
 
-  const handlePageChange = (pageNumber) => {
+  const handlePageChange = pageNumber => {
     const searchParams = new URLSearchParams(search);
     searchParams.set('page', pageNumber);
     navigate(`${pathname}?${searchParams.toString()}`);
@@ -6211,7 +6211,7 @@ const upload = multer({ storage });
 
 const parser = new DataParser();
 
-export const formatImage = (file) => {
+export const formatImage = file => {
   const fileExtension = path.extname(file.originalname).toString();
   return parser.format(fileExtension, file.buffer).content;
 };
@@ -6475,7 +6475,7 @@ const statsQuery = {
   },
 };
 
-export const loader = (queryClient) => async () => {
+export const loader = queryClient => async () => {
   const data = await queryClient.ensureQueryData(statsQuery);
   return data;
 };
@@ -6509,7 +6509,7 @@ const userQuery = {
   },
 };
 
-export const loader = (queryClient) => async () => {
+export const loader = queryClient => async () => {
   try {
     return await queryClient.ensureQueryData(userQuery);
   } catch (error) {
@@ -6528,7 +6528,7 @@ Login.jsx
 
 ```js
 export const action =
-  (queryClient) =>
+  queryClient =>
   async ({ request }) => {
     const formData = await request.formData();
     const data = Object.fromEntries(formData);
@@ -6559,7 +6559,7 @@ Profile.jsx
 
 ```js
 export const action =
-  (queryClient) =>
+  queryClient =>
   async ({ request }) => {
     const formData = await request.formData();
     const file = formData.get('avatar');
@@ -6592,7 +6592,7 @@ import { useContext, createContext } from 'react';
 import { useQuery } from '@tanstack/react-query';
 const AllJobsContext = createContext();
 
-const allJobsQuery = (params) => {
+const allJobsQuery = params => {
   const { search, jobStatus, jobType, sort, page } = params;
   return {
     queryKey: [
@@ -6613,7 +6613,7 @@ const allJobsQuery = (params) => {
 };
 
 export const loader =
-  (queryClient) =>
+  queryClient =>
   async ({ request }) => {
     const params = Object.fromEntries([
       ...new URL(request.url).searchParams.entries(),
@@ -6644,7 +6644,7 @@ AddJob.jsx
 
 ```js
 export const action =
-  (queryClient) =>
+  queryClient =>
   async ({ request }) => {
     const formData = await request.formData();
     const data = Object.fromEntries(formData);
@@ -6664,7 +6664,7 @@ EditJob.jsx
 
 ```js
 export const action =
-  (queryClient) =>
+  queryClient =>
   async ({ request, params }) => {
     const formData = await request.formData();
     const data = Object.fromEntries(formData);
@@ -6684,7 +6684,7 @@ DeleteJob.jsx
 
 ```js
 export const action =
-  (queryClient) =>
+  queryClient =>
   async ({ params }) => {
     try {
       await customFetch.delete(`/jobs/${params.id}`);
@@ -6709,7 +6709,7 @@ import { toast } from 'react-toastify';
 import customFetch from '../utils/customFetch';
 import { useQuery } from '@tanstack/react-query';
 
-const singleJobQuery = (id) => {
+const singleJobQuery = id => {
   return {
     queryKey: ['job', id],
     queryFn: async () => {
@@ -6720,7 +6720,7 @@ const singleJobQuery = (id) => {
 };
 
 export const loader =
-  (queryClient) =>
+  queryClient =>
   async ({ params }) => {
     try {
       await queryClient.ensureQueryData(singleJobQuery(params.id));
@@ -6732,7 +6732,7 @@ export const loader =
   };
 
 export const action =
-  (queryClient) =>
+  queryCl =>
   async ({ request, params }) => {
     const formData = await request.formData();
     const data = Object.fromEntries(formData);
