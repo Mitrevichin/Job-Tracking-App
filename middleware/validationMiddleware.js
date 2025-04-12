@@ -1,6 +1,7 @@
-import { body, validationResult } from 'express-validator';
+import { body, param, validationResult } from 'express-validator';
 import { BadRequestError } from '../errors/customErrors.js';
 import { JOB_STATUS, JOB_TYPE } from '../utils/constants.js';
+import mongoose from 'mongoose';
 
 const withValidationErrors = validateValues => {
   // In Express if you want to return 2 middleware you can group them in an array
@@ -27,4 +28,10 @@ export const validateJobInput = withValidationErrors([
   body('jobType')
     .isIn(Object.values(JOB_TYPE))
     .withMessage('Invalid type value'),
+]);
+
+export const validateIdParam = withValidationErrors([
+  param('id')
+    .custom(value => mongoose.Types.ObjectId.isValid(value))
+    .withMessage('Invalid MongoDB id.'),
 ]);
