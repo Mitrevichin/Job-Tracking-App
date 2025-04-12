@@ -1,6 +1,5 @@
 import JobModel from '../models/JobModel.js';
 import { nanoid } from 'nanoid';
-import { NotFoundError } from '../errors/customErrors.js';
 
 let jobs = [
   { id: nanoid(), company: 'Apple', position: 'Front-end' },
@@ -25,9 +24,10 @@ export const getJob = async (req, res) => {
   const { id } = req.params;
   const job = await JobModel.findById(id);
 
-  if (!job) {
-    throw new NotFoundError(`No job with id ${id}`);
-  }
+  // This logic is moved in the validation middleware
+  // if (!job) {
+  //   throw new NotFoundError(`No job with id ${id}`);
+  // }
 
   res.status(200).json({ job });
 };
@@ -45,9 +45,10 @@ export const updateJob = async (req, res) => {
     runValidators: true, // Enforce your schema rules on update
   });
 
-  if (!updatedJob) {
-    return res.status(404).json({ meessage: `No job with id ${id}` });
-  }
+  // This logic is moved in the validation middleware
+  // if (!updatedJob) {
+  //   return res.status(404).json({ meessage: `No job with id ${id}` });
+  // }
 
   res.status(200).json({ message: 'Job modified', job: updatedJob });
 };
@@ -57,9 +58,10 @@ export const deleteJob = async (req, res) => {
   const { id } = req.params;
   const removedJob = await JobModel.findByIdAndDelete(id);
 
-  if (!removedJob) {
-    return res.status(404).json({ meessage: `No job with id ${id}` });
-  }
+  // This logic is moved in the validation middleware
+  // if (!removedJob) {
+  //   return res.status(404).json({ meessage: `No job with id ${id}` });
+  // }
 
   res.status(200).json({ message: 'Job deleted', job: removedJob });
 };

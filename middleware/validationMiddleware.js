@@ -1,7 +1,8 @@
 import { body, param, validationResult } from 'express-validator';
-import { BadRequestError } from '../errors/customErrors.js';
+import { BadRequestError, NotFoundError } from '../errors/customErrors.js';
 import { JOB_STATUS, JOB_TYPE } from '../utils/constants.js';
 import mongoose from 'mongoose';
+import JobModel from '../models/JobModel.js';
 
 const withValidationErrors = validateValues => {
   // In Express if you want to return 2 middleware you can group them in an array
@@ -30,8 +31,15 @@ export const validateJobInput = withValidationErrors([
     .withMessage('Invalid type value'),
 ]);
 
+// Validate that the ID is a valid MongoDB ObjectId and that a job with this ID exists in the database.
 export const validateIdParam = withValidationErrors([
-  param('id')
-    .custom(value => mongoose.Types.ObjectId.isValid(value))
-    .withMessage('Invalid MongoDB id.'),
+  param('id').custom(async value => {
+    const isValidId = mongoose.Types.ObjectId.isValid(value);
+    if (!isValidId) throw new BadRequestError('Invalid MongoDB id.');
+
+    const job = await JobModel.findById(value);
+    if (!job) {
+      throw new NotFoundError(`No job with id ${value}`);
+    }
+  }),
 ]);
