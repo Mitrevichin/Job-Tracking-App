@@ -1,10 +1,4 @@
 import JobModel from '../models/JobModel.js';
-import { nanoid } from 'nanoid';
-
-let jobs = [
-  { id: nanoid(), company: 'Apple', position: 'Front-end' },
-  { id: nanoid(), company: 'Google', position: 'Back-end' },
-];
 
 //GET ALL JOBS
 export const getAllJobs = async (req, res) => {
