@@ -7,6 +7,7 @@ import mongoose from 'mongoose';
 import errorHandlerMiddleware from './middleware/errorHandlerMiddleware.js';
 
 import jobRouter from './routes/jobRouter.js';
+import authRouter from './routes/authRouter.js';
 
 dotenv.config();
 const app = express();
@@ -21,6 +22,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/v1/jobs', jobRouter);
+app.use('/api/v1/auth', authRouter);
 
 // The order matters. If the request is not one of the CRUD methods above
 // it's gonna enter this middleware
