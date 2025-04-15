@@ -34,14 +34,28 @@ export const login = async (req, res) => {
   if (!isPasswordCorrect)
     throw new UnauthenticatedError('Invalid credentials.');
 
-  const token = createJWT({ userId: user._id, role: user.role });
-
-  res.json({ token });
-
   // Another SHORTER approach
   /*
   const isValidUser =
     user && (await comparePassword(req.body.password, user.password));
     if (!isValidUser) throw new UnauthenticatedError('Invalid credentials.'); 
 */
+
+  /* 
+  JWT can be sent to the client either in the response body (easy to use with localStorage) or as an httpOnly cookie (more secure against XSS); choose based on your app’s needs.Generate and send JWT after login (auth confirmed). 
+  Optionally send it after registration if auto-login is desired.
+  */
+  const token = createJWT({ userId: user._id, role: user.role });
+
+  const oneDayInMlSec = 1000 * 60 * 60 * 24;
+
+  res.cookie('token', token, {
+    httpOnly: true,
+    expires: new Date(Date.now() + oneDayInMlSec),
+    secure: process.env.NODE_ENV === 'production',
+  });
+
+  res.status(200).json({ message: 'User logged in' });
+
+  // res.json({ token });
 };
