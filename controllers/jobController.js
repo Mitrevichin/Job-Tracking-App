@@ -2,6 +2,7 @@ import JobModel from '../models/JobModel.js';
 
 //GET ALL JOBS
 export const getAllJobs = async (req, res) => {
+  console.log(req.user);
   const jobs = await JobModel.find();
   res.status(200).json({ jobs });
 };

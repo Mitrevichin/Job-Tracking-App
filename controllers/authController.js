@@ -3,6 +3,7 @@ import UserModel from '../models/UserModel.js';
 import { comparePassword, hashPassword } from '../utils/passwordUtils.js';
 import { createJWT } from '../utils/tokenUtils.js';
 
+// REGISTER
 export const register = async (req, res) => {
   const isFirstAccount = (await UserModel.countDocuments()) === 0;
   req.body.role = isFirstAccount ? 'admin' : 'user';
@@ -22,6 +23,7 @@ export const register = async (req, res) => {
   res.status(201).json({ message: 'User created' });
 };
 
+// LOGIN
 export const login = async (req, res) => {
   const user = await UserModel.findOne({ email: req.body.email });
   if (!user) throw new UnauthenticatedError('Invalid credentials.');
@@ -44,6 +46,13 @@ export const login = async (req, res) => {
   /* 
   JWT can be sent to the client either in the response body (easy to use with localStorage) or as an httpOnly cookie (more secure against XSS); choose based on your app’s needs.Generate and send JWT after login (auth confirmed). 
   Optionally send it after registration if auto-login is desired.
+  
+  JWT Payload Best Practices:
+  - Always include: userId → uniquely identifies the user on each request
+  - Highly recommended: role → enables role-based access control (e.g., admin, user)
+  - Optional extras: email, name, isVerified, orgId → useful for personalization or internal logic
+  - Do NOT include: passwords or any sensitive/confidential data
+  - Why? JWT is sent with every request (usually in a cookie or header), so keep the payload minimal and secure
   */
   const token = createJWT({ userId: user._id, role: user.role });
 

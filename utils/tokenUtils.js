@@ -6,3 +6,9 @@ export const createJWT = payload => {
   });
   return token;
 };
+
+export const verifyJWT = token => {
+  // Here after the decoding I will get what first is sent as a payload(id and role)
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  return decoded;
+};
