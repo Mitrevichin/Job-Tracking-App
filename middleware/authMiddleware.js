@@ -1,4 +1,7 @@
-import { UnauthenticatedError } from '../errors/customErrors.js';
+import {
+  UnauthenticatedError,
+  UnauthorizedError,
+} from '../errors/customErrors.js';
 import { verifyJWT } from '../utils/tokenUtils.js';
 
 export const authenticateUser = (req, res, next) => {
@@ -19,4 +22,32 @@ export const authenticateUser = (req, res, next) => {
   } catch (error) {
     throw new UnauthenticatedError('Authentication invalid');
   }
+};
+
+/*
+If you didn’t need to pass parameters, you could write middleware like this:
+
+const isAdmin = (req, res, next) => {
+  if (req.user.role !== 'admin') {
+    throw new UnauthorizedError('Not allowed');
+  }
+  next();
+};
+
+router.get('/admin/app-stats', isAdmin, getApplicationStats);
+
+
+No need to “invoke” it here — because isAdmin is already a plain middleware function.
+So why do we invoke it like authorizePermissions('admin')?
+Because:
+ You want the middleware to be dynamic.
+ You want to reuse it for different roles.
+*/
+export const authorizePermissions = (...roles) => {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      throw new UnauthorizedError('Unauthorize to accsess this route');
+    }
+    next();
+  };
 };

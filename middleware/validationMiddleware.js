@@ -83,3 +83,22 @@ export const validateLoginInput = withValidationErrors([
     .withMessage('Invalid email format'),
   body('password').notEmpty().withMessage('Password is required'),
 ]);
+
+export const validateUpdateUserInput = withValidationErrors([
+  body('name').notEmpty().withMessage('Name is required'),
+  body('email')
+    .notEmpty()
+    .withMessage('Email is required')
+    .isEmail()
+    .withMessage('Invalid email format')
+    .custom(async (email, { req }) => {
+      const user = await UserModel.findOne({ email });
+
+      // This check is crucial for maintaining data integrity and ensuring that each email address in your system remains unique to a single user.
+      // If true, it means another user owns the email, and an error is thrown.If false, it means the current user owns the email, and the update proceeds
+      if (user && user._id.toString() !== req.user.userId)
+        throw new BadRequestError('Email already exists');
+    }),
+  body('location').notEmpty().withMessage('Location is required'),
+  body('lastName').notEmpty().withMessage('Last name is required'),
+]);
