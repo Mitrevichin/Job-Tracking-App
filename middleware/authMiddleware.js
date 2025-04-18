@@ -12,6 +12,7 @@ export const authenticateUser = (req, res, next) => {
       We extract userId and role from the verified JWT and attach them to req.user.
       This allows all subsequent middleware and route handlers to easily access the user's identity and permissions.
       For example, we can later check req.user.role to authorize access to admin-only routes.
+      Once a user is authenticated (e.g., via JWT), their identity and role/permissions are attached to the request context — so that other parts of the app can access it easily.
      */
     req.user = { userId, role };
     next();
