@@ -68,3 +68,16 @@ export const login = async (req, res) => {
 
   // res.json({ token });
 };
+
+// LOGOUT
+export const logout = (req, res) => {
+  // Log out by overwriting the JWT cookie with a dummy value and setting it to expire immediately.
+  // This removes the token from the browser on the client side.
+
+  res.cookie('token', 'logout', {
+    httpOnly: true,
+    expires: new Date(Date.now()),
+  });
+
+  res.status(200).json({ message: 'User logged out!' });
+};
