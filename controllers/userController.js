@@ -19,6 +19,9 @@ export const getApplicationStats = async (req, res) => {
 export const updateUser = async (req, res) => {
   const { name, email, lastName, location } = req.body; // Destructure fields you want to update
 
+  /*
+    The purpose of using the rest/spread operator is to create a shallow copy of req.body. Good practice: don't modify the request object if you don't need to. If something else later in your code (or another middleware) relies on req.body, it won't be affected.
+  */
   const obj = { ...req.body };
   delete obj.password;
 
