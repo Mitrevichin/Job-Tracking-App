@@ -43,6 +43,17 @@ export const updateJob = async (req, res) => {
 
   const updatedFields = { company, position, jobStatus, jobType, jobLocation };
 
+  /*
+    If you use .save(), you don’t need runValidators: true. It's only needed with update methods like:
+
+   -findByIdAndUpdate
+   -updateOne
+   -findOneAndUpdate
+
+   const job = await JobModel.findById(id);
+   job.company = 'Amazon';
+   await job.save(); // ✅ Always runs validation
+  */
   const updatedJob = await JobModel.findByIdAndUpdate(id, updatedFields, {
     // Always use new: true and runValidators: true when doing findByIdAndUpdate, updateOne, findOneAndUpdate
     new: true, // Get updated doc instead of the original

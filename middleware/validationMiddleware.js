@@ -96,6 +96,7 @@ export const validateUpdateUserInput = withValidationErrors([
 
       // This check is crucial for maintaining data integrity and ensuring that each email address in your system remains unique to a single user.
       // If true, it means another user owns the email, and an error is thrown.If false, it means the current user owns the email, and the update proceeds
+      // THIS CHECK ONLY APPLIES FOR THE EMAIL CHECK AND IT HAS TO BE ALWAYS present during user email updates
       if (user && user._id.toString() !== req.user.userId)
         throw new BadRequestError('Email already exists');
     }),

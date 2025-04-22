@@ -25,13 +25,6 @@ if (process.env.NODE_ENV === 'development') {
 app.use(cookieParser());
 app.use(express.json());
 
-app.get('/', (req, res) => {
-  res.send('Hello World!');
-});
-app.get('/api/v1/test', (req, res) => {
-  res.send({ msg: 'Arebe' });
-});
-
 app.use('/api/v1/jobs', authenticateUser, jobRouter);
 app.use('/api/v1/users', authenticateUser, userRouter);
 app.use('/api/v1/auth', authRouter);
@@ -43,7 +36,7 @@ app.use('*', (req, res) => {
 });
 
 // If there is a throw new Error somewhere, it's gonna be caught here in the err
-/*This error middleware will automatically catch the error, whether it's synchronous or asynchronous when express-async-errors is installed*/
+/*This error middleware will automatically catch the error, whether it's synchronous or asynchronous when express-async-errors is installed. No need of try-catch*/
 app.use(errorHandlerMiddleware);
 
 connectToDB();

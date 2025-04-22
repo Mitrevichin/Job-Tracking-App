@@ -2,6 +2,23 @@ import JobModel from '../models/JobModel.js';
 import UserModel from '../models/UserModel.js';
 
 // GET CURRENT USER
+/*
+  ✅ getCurrentUser
+Purpose:
+Provides the currently logged-in user's data.
+
+Why it’s common:
+Most apps (dashboards, marketplaces, job boards, etc.) need to show who is logged in and personalize their experience.
+
+Example usage:
+When your frontend loads the dashboard, it might call /api/user/current to get the user's name, role, etc.
+
+Pattern:
+Requires authentication (i.e. the user has a token)
+Returns user data (but never sensitive fields like password)
+
+✅ Best practice: Don't rely on frontend storage for user info — always ask the backend!
+*/
 export const getCurrentUser = async (req, res) => {
   const user = await UserModel.findOne({ _id: req.user.userId });
   const userWithoutPassword = user.toJSON();

@@ -46,7 +46,7 @@ Because:
 export const authorizePermissions = (...roles) => {
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) {
-      throw new UnauthorizedError('Unauthorize to accsess this route');
+      throw new UnauthorizedError('Unauthorize to access this route');
     }
     next();
   };
