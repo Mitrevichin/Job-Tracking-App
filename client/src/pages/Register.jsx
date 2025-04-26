@@ -5,10 +5,13 @@ import customFetch from '../utils/customFetch';
 import { Logo, FormRow } from '../components';
 import { toast } from 'react-toastify';
 
-// React Router action is a way to handle form submissions and server communication directly inside the routing system.
-// An action is a function you define for a route.
-// It runs when a form is submitted with <Form method="post" /> (or other HTTP methods like PUT, DELETE).
+/* 
+React Router action is a way to handle form submissions and server communication directly inside the routing system.
+An action is a function you define for a route.
+It runs when a form is submitted with <Form method="post" /> (or other HTTP methods like PUT, DELETE).
+*/
 export const action = async ({ request }) => {
+  // When you use formData() — the name attribute of the input is the key in the key-value pairs that get created.
   const formData = await request.formData();
   const data = Object.fromEntries(formData);
 
