@@ -11,7 +11,7 @@ Why it’s common:
 Most apps (dashboards, marketplaces, job boards, etc.) need to show who is logged in and personalize their experience.
 
 Example usage:
-When your frontend loads the dashboard, it might call /api/user/current to get the user's name, role, etc.
+When your frontend loads the dashboard, it might call /api/user/current-user to get the user's name, role, etc.
 
 Pattern:
 Requires authentication (i.e. the user has a token)

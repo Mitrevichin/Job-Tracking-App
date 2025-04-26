@@ -16,6 +16,8 @@ import {
 import { action as registerAction } from './pages/Register';
 import { action as loginAction } from './pages/Login';
 
+import { loader as dashboardLoader } from './pages/DashboardLayout';
+
 export const checkdefaultTheme = () => {
   const isDarkTheme = localStorage.getItem('darkTheme') === 'true';
   document.body.classList.toggle('dark-theme', isDarkTheme);
@@ -48,6 +50,9 @@ const router = createBrowserRouter([
       {
         path: 'dashboard',
         element: <DashBoardLayout />,
+        // Again this loader function must return something always
+        // Loaders are special functions you attach to a route to fetch data BEFORE the page renders.
+        loader: dashboardLoader,
         children: [
           {
             index: true,
