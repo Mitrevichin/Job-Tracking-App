@@ -1,4 +1,7 @@
-/* All errors that occur in async functions will be caught and forwarded to your error-handling middleware (just like synchronous errors) */
+/* 
+ All errors that occur in async functions will be caught and forwarded to your error-handling middleware (just like synchronous errors).
+ There is a difference between express-async-handler and express-async-errors, and they solve the same problem (handling async errors in Express) in two different ways.Express-async-handler - You wrap each route handler in a function. Express-async-errors - You just require it once (no wrapping needed) and a global error middleware is needed
+*/
 import 'express-async-errors';
 import * as dotenv from 'dotenv';
 import express from 'express';
