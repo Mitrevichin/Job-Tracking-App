@@ -18,7 +18,7 @@ export const loader = async () => {
 const DashboardContext = createContext();
 
 function DashboardLayout() {
-  const { user } = useLoaderData();
+  const user = useLoaderData();
   const navigate = useNavigate();
 
   const [showSidebar, setShowSideBar] = useState(false);
@@ -61,6 +61,7 @@ function DashboardLayout() {
           <div>
             <Navbar />
             <div className='dashboard-page'>
+              {/* This context is provided by default by react router 6 and above. It's similar to the manual creation of a context */}
               <Outlet context={user} />
             </div>
           </div>

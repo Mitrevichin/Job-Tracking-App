@@ -1,4 +1,4 @@
-// useNavigation is only for use inside a React Router app. It depends on React Router's internal navigation state.
+// useNavigation is only for usage inside a React Router app. It depends on React Router's internal navigation state.
 import { Form, redirect, useNavigation, Link } from 'react-router-dom';
 import Wrapper from '../assets/wrappers/RegisterAndLoginPage';
 import customFetch from '../utils/customFetch';
