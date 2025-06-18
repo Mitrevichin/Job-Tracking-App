@@ -24,6 +24,10 @@ function DashboardLayout() {
   const [showSidebar, setShowSideBar] = useState(false);
   const [isDarkTheme, setIsDarkTheme] = useState(checkdefaultTheme());
 
+  // ✅ This is a safe use of document.body because:
+  // - We're only toggling a global class for theming
+  // - React does not manage <body>, so manual control is needed
+
   function toggleDarkTheme() {
     // Using this way because this variable is gonna be used several times
     const newDarkTheme = !isDarkTheme;
