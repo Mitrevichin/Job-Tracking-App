@@ -9,7 +9,7 @@ import { toast } from 'react-toastify';
 export const loader = async () => {
   try {
     const { data } = await customFetch.get('/users/current-user');
-    return data;
+    return data.user;
   } catch (error) {
     return redirect('/');
   }
@@ -19,6 +19,8 @@ const DashboardContext = createContext();
 
 function DashboardLayout() {
   const user = useLoaderData();
+  console.log('Loader data:', useLoaderData());
+
   const navigate = useNavigate();
 
   const [showSidebar, setShowSideBar] = useState(false);
