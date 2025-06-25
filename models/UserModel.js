@@ -20,9 +20,12 @@ const UserSchema = new mongoose.Schema({
 });
 
 /*
-When you define UserSchema.methods.toJSON, you're overriding the default behavior of how the object is turned into JSON.
-JavaScript calls .toJSON() automatically when an object is being stringified (e.g. JSON.stringify(user) or res.json(user) in Express).
-When sending data as JSON (e.g., in an API response), you want a plain object without Mongoose-specific properties.
+Here, this refers to the current Mongoose document (the user).
+The .toObject() method converts the Mongoose document into a plain JavaScript object, stripping away Mongoose-specific properties and methods.
+This makes it easier to manipulate.
+toJSON() is a built-in convention in JavaScript for customizing JSON serialization.
+Mongoose allows you to override this on your schema’s documents by defining UserSchema.methods.toJSON.
+Whenever you do JSON.stringify(user) or res.json(user), your custom toJSON() method runs automatically.
 */
 UserSchema.methods.toJSON = function () {
   let obj = this.toObject();

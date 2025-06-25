@@ -1,5 +1,6 @@
 /* 
  All errors that occur in async functions will be caught and forwarded to your error-handling middleware (just like synchronous errors).
+ 
  There is a difference between express-async-handler and express-async-errors, and they solve the same problem (handling async errors in Express) in two different ways.Express-async-handler - You wrap each route handler in a function. Express-async-errors - You just require it once (no wrapping needed) and a global error middleware is needed
 */
 import 'express-async-errors';
@@ -8,6 +9,11 @@ import express from 'express';
 import morgan from 'morgan';
 import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
+
+// Public
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
+import path from 'path';
 
 // Middlewares
 import errorHandlerMiddleware from './middleware/errorHandlerMiddleware.js';
@@ -25,6 +31,9 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+app.use(express.static(path.resolve(__dirname, './public')));
 app.use(cookieParser());
 app.use(express.json());
 

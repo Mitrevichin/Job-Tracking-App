@@ -39,6 +39,8 @@ export const updateUser = async (req, res) => {
   /*
     The purpose of using the rest/spread operator is to create a shallow copy of req.body. Good practice: don't modify the request object if you don't need to. If something else later in your code (or another middleware) relies on req.body, it won't be affected.
   */
+  //  You destructure only name, email, lastName, location and update those fields directly, so password is never touched or passed in the update.Because of that, the copy + delete password code is unnecessary and can be removed without changing behavior.
+  // This is a protective pattern to exclude password from updates.
   const obj = { ...req.body };
   delete obj.password;
 

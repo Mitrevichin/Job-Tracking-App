@@ -38,7 +38,7 @@ function AddJob() {
             type='text'
             labelText='job location'
             name='jobLocation'
-            defaultValue={user.location}
+            defaultValue={user?.location}
           />
           <FormRowSelect
             labelText='job status'

@@ -5,7 +5,7 @@ import {
 import { verifyJWT } from '../utils/tokenUtils.js';
 
 export const authenticateUser = (req, res, next) => {
-  // This is our cookie that we created and name 'token'. It can be accessed via the cookieParser middleware with req.cookies
+  // This is our cookie that we created with name 'token'. It can be accessed via the cookieParser middleware with req.cookies
   const { token } = req.cookies;
   if (!token) throw new UnauthenticatedError('Authentication invalid');
 
@@ -17,6 +17,7 @@ export const authenticateUser = (req, res, next) => {
       For example, we can later check req.user.role to authorize access to admin-only routes.
       Once a user is authenticated (e.g., via JWT), their identity and role/permissions are attached to the request context — so that other parts of the app can access it easily.
      */
+    // req.user does not exist by default in Express. You're creating and assigning a new property called user on the req (request) object.
     req.user = { userId, role };
     next();
   } catch (error) {

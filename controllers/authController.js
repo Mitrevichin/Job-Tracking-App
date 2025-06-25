@@ -6,12 +6,15 @@ import { createJWT } from '../utils/tokenUtils.js';
 // REGISTER
 export const register = async (req, res) => {
   const isFirstAccount = (await UserModel.countDocuments()) === 0;
+  // You're not including role in the form, so you programmatically add it in the controller.
   req.body.role = isFirstAccount ? 'admin' : 'user';
 
   const { name, email, password, lastName, location, role } = req.body;
 
   const hashedPassword = await hashPassword(password);
 
+  // .create({...}) - creates and saves the document in one step.
+  // new ... + save() - Two-step method)
   const user = await UserModel.create({
     name,
     email,
@@ -71,7 +74,7 @@ export const login = async (req, res) => {
 
 // LOGOUT
 export const logout = (req, res) => {
-  // Log out by overwriting the JWT cookie with a dummy value and setting it to expire immediately.
+  // Log out by overwriting the JWT cookie with a dummy value and setting   it to expire immediately.
   // This removes the token from the browser on the client side.
 
   res.cookie('token', 'logout', {

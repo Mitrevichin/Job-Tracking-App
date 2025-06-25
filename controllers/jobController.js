@@ -12,14 +12,21 @@ export const getAllJobs = async (req, res) => {
 export const createJob = async (req, res) => {
   // Attach the logged-in user's ID to the job before saving.
   // This way, we can later fetch jobs that belong to this specific user (e.g., for dashboards or access control).
+  // This way: The frontend doesn’t send or manipulate createdBy.The backend securely associates the job with the logged-in user.Later, when you fetch jobs, you can filter by createdBy to get only that user’s jobs.
+
   req.body.createdBy = req.user.userId;
 
-  const { company, position } = req.body;
+  const { company, position, jobStatus, jobType, jobLocation } = req.body;
+
   const job = await JobModel.create({
     company,
     position,
+    jobStatus,
+    jobType,
+    jobLocation,
     createdBy: req.user.userId,
   });
+
   res.status(201).json({ job });
 };
 
@@ -62,7 +69,7 @@ export const updateJob = async (req, res) => {
 
   // This logic is moved in the validation middleware
   // if (!updatedJob) {
-  //   return res.status(404).json({ meessage: `No job with id ${id}` });
+  //   return res.status(404).json({ message: `No job with id ${id}` });
   // }
 
   res.status(200).json({ message: 'Job modified', job: updatedJob });

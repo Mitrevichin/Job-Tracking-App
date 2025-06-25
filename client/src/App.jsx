@@ -17,6 +17,7 @@ import {
 /*
 Actions in React Router are special functions connected to routes that automatically handle form submissions and data changes when a <Form method="post" /> is submitted, without needing manual onSubmit inside the component.
 */
+
 import { action as registerAction } from './pages/Register';
 import { action as loginAction } from './pages/Login';
 import { action as addJobAction } from './pages/AddJob';
