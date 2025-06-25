@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { type } from 'os';
 
 const UserSchema = new mongoose.Schema({
   name: String,
@@ -16,6 +17,12 @@ const UserSchema = new mongoose.Schema({
     type: String,
     enum: ['user', 'admin'],
     default: 'user',
+  },
+  avatar: {
+    type: String,
+  },
+  avatarPublicId: {
+    type: String,
   },
 });
 
