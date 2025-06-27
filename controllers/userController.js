@@ -1,5 +1,7 @@
 import JobModel from '../models/JobModel.js';
 import UserModel from '../models/UserModel.js';
+import cloudinary from 'cloudinary';
+import { promises as fs } from 'fs';
 
 // GET CURRENT USER
 /*
@@ -34,17 +36,24 @@ export const getApplicationStats = async (req, res) => {
 
 // UPDATE USER
 export const updateUser = async (req, res) => {
-  // const { name, email, lastName, location } = req.body; Destructure fields you want to update
+  const newUser = { ...req.body };
+  delete newUser.password;
 
-  /*
-    The purpose of using the rest/spread operator is to create a shallow copy of req.body. Good practice: don't modify the request object if you don't need to. If something else later in your code (or another middleware) relies on req.body, it won't be affected.
-  */
-  //  You destructure only name, email, lastName, location and update those fields directly, so password is never touched or passed in the update.Because of that, the copy + delete password code is unnecessary and can be removed without changing behavior.
-  // This is a protective pattern to exclude password from updates.
-  const obj = { ...req.body };
-  delete obj.password;
+  if (req.file) {
+    const response = await cloudinary.v2.uploader.upload(req.file.path);
+    await fs.unlink(req.file.path);
 
-  const updatedUser = await UserModel.findByIdAndUpdate(req.user.userId, obj);
+    newUser.avatar = response.secure_url;
+    newUser.avatarPublicId = response.public_id;
+  }
 
-  res.status(200).json({ message: 'User updated' });
+  const updatedUser = await UserModel.findByIdAndUpdate(
+    req.user.userId,
+    newUser
+  );
+
+  if (req.file && updatedUser.avatarPublicId) {
+    await cloudinary.v2.uploader.destroy(updatedUser.avatarPublicId);
+  }
+  res.status(200).json({ msg: 'update user' });
 };

@@ -32,7 +32,9 @@ function Profile() {
 
   return (
     <Wrapper>
-      {/* The encType attribute in HTML is short for "encoding type", and it's used in <form> elements to specify how form data should be encoded when it is sent to the server. multipart/form-data: Required when uploading files. Sends form data as separate parts, so binary data (like images) can be sent. */}
+      {/* The encType attribute in HTML is short for "encoding type", and it's used in <form> elements to specify how form data should be encoded when it is sent to the server. multipart/form-data: Required when uploading files. Sends form data as separate parts, so binary data (like images) can be sent. 
+      Yes, the server will receive raw form data because of encType='multipart/form-data'. Which is a native FormData object — not JSON, not URL-encoded.
+      */}
       <Form method='post' className='form' encType='multipart/form-data'>
         <h4 className='form-title'>Profile</h4>
 
