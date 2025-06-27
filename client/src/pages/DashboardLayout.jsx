@@ -68,7 +68,7 @@ function DashboardLayout() {
             <Navbar />
             <div className='dashboard-page'>
               {/* This context is provided by default by react router 6 and above. It's similar to the manual creation of a context */}
-              <Outlet context={user} />
+              <Outlet context={{ user }} />
             </div>
           </div>
         </main>
