@@ -1,8 +1,8 @@
 // useNavigation is only for usage inside a React Router app. It depends on React Router's internal navigation state.
-import { Form, redirect, useNavigation, Link } from 'react-router-dom';
+import { Form, redirect, Link } from 'react-router-dom';
 import Wrapper from '../assets/wrappers/RegisterAndLoginPage';
 import customFetch from '../utils/customFetch';
-import { Logo, FormRow } from '../components';
+import { Logo, FormRow, SubmitBtn } from '../components';
 import { toast } from 'react-toastify';
 
 /* 
@@ -29,10 +29,6 @@ export const action = async ({ request }) => {
 };
 
 function Register() {
-  const navigation = useNavigation();
-  console.log(navigation);
-  const isSubmitting = navigation.state === 'submitting';
-
   return (
     <Wrapper>
       <Form method='post' className='form'>
@@ -48,9 +44,7 @@ function Register() {
         <FormRow type='text' name='location' defaultValue='earth' />
         <FormRow type='email' name='email' defaultValue='john@gmail.com' />
         <FormRow type='password' name='password' defaultValue='secret123' />
-        <button className='btn btn-block' disabled={isSubmitting}>
-          {isSubmitting ? 'Submitting' : 'Submit'}
-        </button>
+        <SubmitBtn />
         <p>
           Already a member?
           <Link to='/login' className='member-btn'>

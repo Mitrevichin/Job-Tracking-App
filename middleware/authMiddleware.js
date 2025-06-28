@@ -1,4 +1,5 @@
 import {
+  BadRequestError,
   UnauthenticatedError,
   UnauthorizedError,
 } from '../errors/customErrors.js';
@@ -11,6 +12,7 @@ export const authenticateUser = (req, res, next) => {
 
   try {
     const { userId, role } = verifyJWT(token);
+    const testUser = userId === '685feef1619833ec7a8094ff';
     /*
       We extract userId and role from the verified JWT and attach them to req.user.
       This allows all subsequent middleware and route handlers to easily access the user's identity and permissions.
@@ -18,7 +20,7 @@ export const authenticateUser = (req, res, next) => {
       Once a user is authenticated (e.g., via JWT), their identity and role/permissions are attached to the request context — so that other parts of the app can access it easily.
      */
     // req.user does not exist by default in Express. You're creating and assigning a new property called user on the req (request) object.
-    req.user = { userId, role };
+    req.user = { userId, role, testUser };
     next();
   } catch (error) {
     throw new UnauthenticatedError('Authentication invalid');
@@ -51,4 +53,12 @@ export const authorizePermissions = (...roles) => {
     }
     next();
   };
+};
+
+export const checkForDemoUser = (req, res, next) => {
+  // You will have access to req.user because your authenticateUser middleware runs before checkForDemoUser in the middleware chain.
+  // in Node/Express, a throw is always a full stop — the line after it will never run. No return statement is needed
+
+  if (req.user.testUser) throw new BadRequestError('Demo user. Read only.');
+  next();
 };
