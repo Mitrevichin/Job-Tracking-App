@@ -1,4 +1,6 @@
 import JobModel from '../models/JobModel.js';
+import mongoose from 'mongoose';
+import day from 'dayjs';
 
 //GET ALL JOBS
 export const getAllJobs = async (req, res) => {
@@ -86,4 +88,29 @@ export const deleteJob = async (req, res) => {
   // }
 
   res.status(200).json({ message: 'Job deleted', job: removedJob });
+};
+
+// JOB STATS
+export const showStats = (req, res) => {
+  const defaultStats = {
+    pending: 22,
+    interview: 30,
+    declined: 19,
+  };
+
+  const monthlyApplications = [
+    {
+      date: 'May 12',
+      count: 12,
+    },
+    {
+      date: 'Jun 12',
+      count: 9,
+    },
+    {
+      date: 'Jul 12',
+      count: 3,
+    },
+  ];
+  res.status(200).json({ defaultStats, monthlyApplications });
 };
