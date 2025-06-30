@@ -1,6 +1,7 @@
 import JobModel from '../models/JobModel.js';
 import mongoose from 'mongoose';
 import day from 'dayjs';
+import { count } from 'console';
 
 //GET ALL JOBS
 export const getAllJobs = async (req, res) => {
@@ -91,26 +92,54 @@ export const deleteJob = async (req, res) => {
 };
 
 // JOB STATS
-export const showStats = (req, res) => {
+export const showStats = async (req, res) => {
+  let stats = await JobModel.aggregate([
+    // req.user.userId is a string and has to be converted to ObjectId
+    { $match: { createdBy: new mongoose.Types.ObjectId(req.user.userId) } },
+    { $group: { _id: '$jobStatus', count: { $sum: 1 } } },
+  ]);
+
+  stats = stats.reduce((acc, cur) => {
+    const { _id: title, count } = cur;
+    acc[title] = count;
+    return acc;
+  }, {});
+
+  console.log(stats);
+
   const defaultStats = {
-    pending: 22,
-    interview: 30,
-    declined: 19,
+    pending: stats.pending || 22,
+    interview: stats.interview || 30,
+    declined: stats.declined || 19,
   };
 
-  const monthlyApplications = [
+  let monthlyApplications = await JobModel.aggregate([
+    { $match: { createdBy: new mongoose.Types.ObjectId(req.user.userId) } },
     {
-      date: 'May 12',
-      count: 12,
+      $group: {
+        _id: { year: { $year: '$createdAt' }, month: { $month: '$createdAt' } },
+        count: { $sum: 1 },
+      },
     },
-    {
-      date: 'Jun 12',
-      count: 9,
-    },
-    {
-      date: 'Jul 12',
-      count: 3,
-    },
-  ];
+    { $sort: { '_id.year': -1, '_id.month': -1 } },
+    { $limit: 6 },
+  ]);
+
+  monthlyApplications = monthlyApplications
+    .map(item => {
+      const {
+        _id: { year, month },
+        count,
+      } = item;
+
+      const date = day()
+        .month(month - 1)
+        .year(year)
+        .format('MMM YY');
+
+      return { date, count };
+    })
+    .reverse();
+
   res.status(200).json({ defaultStats, monthlyApplications });
 };

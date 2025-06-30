@@ -14,6 +14,11 @@ import {
 } from '../middleware/validationMiddleware.js';
 
 const router = Router();
+/*
+  Express goes top to bottom through your route and middleware definitions.
+  Always define more specific routes before dynamic ones like /:id.
+  Middleware and route handlers execute in the order you define them.
+*/
 
 router
   .route('/')
