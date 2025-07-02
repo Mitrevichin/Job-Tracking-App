@@ -1,4 +1,4 @@
-function formRowSelect({ name, labelText, list, defaultValue = '' }) {
+function formRowSelect({ name, labelText, list, defaultValue = '', onChange }) {
   return (
     <div className='form-row'>
       <label htmlFor={name} className='form-label'>
@@ -9,6 +9,7 @@ function formRowSelect({ name, labelText, list, defaultValue = '' }) {
         id={name}
         className='form-select'
         defaultValue={defaultValue}
+        onChange={onChange}
       >
         {list.map(itemValue => {
           return (

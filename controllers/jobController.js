@@ -2,43 +2,66 @@ import JobModel from '../models/JobModel.js';
 import mongoose from 'mongoose';
 import day from 'dayjs';
 
-//GET ALL JOBS
+//GET ALL JOBS (SEARCH, SORT, PAGINATION)
 export const getAllJobs = async (req, res) => {
+  // Destructure query parameters from the URL
   const { search, jobStatus, jobType, sort } = req.query;
 
-  // Only provide jobs that belong to the specific user
-  // You can filter by any field that exists in your schema model
+  // Initialize a query object to filter jobs in the database
+  // Only fetch jobs created by the currently logged-in user
   const queryObject = {
-    createdBy: req.user.userId,
+    createdBy: req.user.userId, // `req.user.userId` comes from the auth middleware
   };
 
-  // Those attached properties must be some of the ones we have in our model
+  // If there's a search term, search for it in the "position" or "company" fields
   if (search) {
+    // This line assigns a new property to queryObject:
     queryObject.$or = [
+      // Case-insensitive regex search on "position"
       { position: { $regex: search, $options: 'i' } },
+      // Case-insensitive regex search on "company"
       { company: { $regex: search, $options: 'i' } },
     ];
   }
 
+  // If jobStatus is selected and it's not "all", filter by that specific status
   if (jobStatus && jobStatus !== 'all') {
     queryObject.jobStatus = jobStatus;
   }
 
+  // If jobType is selected and it's not "all", filter by that type
   if (jobType && jobType !== 'all') {
     queryObject.jobType = jobType;
   }
 
+  // Define sorting options (how we want to order the jobs)
   const sortOptions = {
-    newest: '-createdAt',
-    oldest: 'createdAt',
-    'a-z': 'position',
-    'z-a': '-position',
+    newest: '-createdAt', // descending order by creation date
+    oldest: 'createdAt', // ascending order by creation date
+    'a-z': 'position', // ascending order alphabetically by position
+    'z-a': '-position', // descending order alphabetically by position
   };
 
+  // Pick the actual sort key based on the user’s input (or default to 'newest')
   const sortKey = sortOptions[sort] || sortOptions.newest;
 
-  const jobs = await JobModel.find(queryObject).sort(sortKey);
-  res.status(200).json({ jobs });
+  // Setup Pagination
+  const page = Number(req.query.page || 1);
+  // The limit is not gonna be passed with the Front-end and the default 10 will be used every time
+  const limit = Number(req.query.limit || 10);
+  const skip = (page - 1) * limit; // Number of jobs to skip before starting current page
+
+  // Use Mongoose to find the jobs that match the queryObject and sort them
+  const jobs = await JobModel.find(queryObject)
+    .sort(sortKey)
+    .skip(skip)
+    .limit(limit);
+  // You can use countDocuments with a filter (query) or without one.
+  const totalJobs = await JobModel.countDocuments(queryObject);
+  const numOfPages = Math.ceil(totalJobs / limit);
+
+  // Return the jobs in JSON format with HTTP status 200 (OK)
+  res.status(200).json({ totalJobs, numOfPages, currentPage: page, jobs });
 };
 
 // CREATE JOB
