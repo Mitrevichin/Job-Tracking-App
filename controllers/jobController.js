@@ -1,13 +1,34 @@
 import JobModel from '../models/JobModel.js';
 import mongoose from 'mongoose';
 import day from 'dayjs';
-import { count } from 'console';
 
 //GET ALL JOBS
 export const getAllJobs = async (req, res) => {
+  const { search, jobStatus, jobType } = req.query;
+
   // Only provide jobs that belong to the specific user
-  // You can filter by any field that exists in your schema
-  const jobs = await JobModel.find({ createdBy: req.user.userId });
+  // You can filter by any field that exists in your schema model
+  const queryObject = {
+    createdBy: req.user.userId,
+  };
+
+  // Those attached properties must be some of the ones we have in our model
+  if (search) {
+    queryObject.$or = [
+      { position: { $regex: search, $options: 'i' } },
+      { company: { $regex: search, $options: 'i' } },
+    ];
+  }
+
+  if (jobStatus && jobStatus !== 'all') {
+    queryObject.jobStatus = jobStatus;
+  }
+
+  if (jobType && jobType !== 'all') {
+    queryObject.jobType = jobType;
+  }
+
+  const jobs = await JobModel.find(queryObject);
   res.status(200).json({ jobs });
 };
 
