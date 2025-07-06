@@ -4,6 +4,7 @@ import {
   validateRegisterInput,
   validateLoginInput,
 } from '../middleware/validationMiddleware.js';
+import { checkForDemoUser } from '../middleware/authMiddleware.js';
 
 const router = Router();
 
