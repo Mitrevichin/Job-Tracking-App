@@ -1,4 +1,4 @@
-function formRowSelect({ name, labelText, list, defaultValue = '', onChange }) {
+function FormRowSelect({ name, labelText, list, defaultValue = '', onChange }) {
   return (
     <div className='form-row'>
       <label htmlFor={name} className='form-label'>
@@ -23,4 +23,4 @@ function formRowSelect({ name, labelText, list, defaultValue = '', onChange }) {
   );
 }
 
-export default formRowSelect;
+export default FormRowSelect;
