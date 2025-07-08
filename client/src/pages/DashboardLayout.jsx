@@ -1,6 +1,12 @@
-import { Outlet, redirect, useLoaderData, useNavigate } from 'react-router-dom';
+import {
+  Outlet,
+  redirect,
+  useLoaderData,
+  useNavigate,
+  useNavigation,
+} from 'react-router-dom';
 import Wrapper from '../assets/wrappers/Dashboard';
-import { BigSidebar, Navbar, SmallSidebar } from '../components';
+import { BigSidebar, Loading, Navbar, SmallSidebar } from '../components';
 import { createContext, useContext, useState } from 'react';
 import { checkdefaultTheme } from '../App';
 import customFetch from '../utils/customFetch';
@@ -19,9 +25,10 @@ const DashboardContext = createContext();
 
 function DashboardLayout() {
   const user = useLoaderData();
-  console.log('Loader data:', useLoaderData());
-
   const navigate = useNavigate();
+  const navigation = useNavigation();
+
+  const isLoadingPage = navigation.state === 'loading';
 
   const [showSidebar, setShowSideBar] = useState(false);
   const [isDarkTheme, setIsDarkTheme] = useState(checkdefaultTheme());
@@ -68,7 +75,7 @@ function DashboardLayout() {
             <Navbar />
             <div className='dashboard-page'>
               {/* This context is provided by default by react router 6 and above. It's similar to the manual creation of a context */}
-              <Outlet context={{ user }} />
+              {isLoadingPage ? <Loading /> : <Outlet context={{ user }} />}
             </div>
           </div>
         </main>
