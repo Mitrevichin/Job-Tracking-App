@@ -73,10 +73,10 @@ const router = createBrowserRouter([
       },
       {
         path: 'dashboard',
-        element: <DashBoardLayout />,
+        element: <DashBoardLayout queryClient={queryClient} />,
         // Again this loader function must return something always
         // Loaders are special functions you attach to a route to fetch data BEFORE the page renders.
-        loader: dashboardLoader,
+        loader: dashboardLoader(queryClient),
         children: [
           {
             index: true,
