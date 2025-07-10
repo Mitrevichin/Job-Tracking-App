@@ -61,6 +61,8 @@ function DashboardLayout(isDarkThemeEnabled, queryClient) {
   async function logoutUser() {
     navigate('/');
     await customFetch.get('/auth/logout');
+    queryClient.invalidateQueries();
+
     toast.success('Logging out...');
   }
 
