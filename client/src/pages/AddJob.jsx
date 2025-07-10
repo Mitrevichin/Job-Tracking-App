@@ -6,21 +6,24 @@ import { Form, redirect } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import customFetch from '../utils/customFetch';
 
-export const action = async ({ request }) => {
-  const formData = await request.formData();
-  // This FormData object is not a regular JS object, but an iterable of key-value pairs. The Object.fromEntries() method converts a list of key-value pairs into a plain JavaScript object.
-  // Object.entries(obj)	Converts an object into an array of [key, value] pairs
-  const data = Object.fromEntries(formData);
+export const action =
+  queryClient =>
+  async ({ request }) => {
+    const formData = await request.formData();
+    // This FormData object is not a regular JS object, but an iterable of key-value pairs. The Object.fromEntries() method converts a list of key-value pairs into a plain JavaScript object.
+    // Object.entries(obj)	Converts an object into an array of [key, value] pairs
+    const data = Object.fromEntries(formData);
 
-  try {
-    await customFetch.post('/jobs', data);
-    toast.success('Job added successfully');
-    return redirect('all-jobs');
-  } catch (error) {
-    toast.error(error?.response?.data?.message);
-    return error;
-  }
-};
+    try {
+      await customFetch.post('/jobs', data);
+      queryClient.invalidateQueries(['jobs']);
+      toast.success('Job added successfully');
+      return redirect('all-jobs');
+    } catch (error) {
+      toast.error(error?.response?.data?.message);
+      return error;
+    }
+  };
 
 function AddJob() {
   const { user } = useOutletContext();
